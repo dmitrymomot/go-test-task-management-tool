@@ -20,7 +20,7 @@ Personal task management tool
 $ make run
 ```
 
-HTTP sever will be started on port [:8080]
+HTTP sever will be started on port **[:8080]** and available by url <http://localhost:8080>
 
 ### Stop And Remove Application
 
