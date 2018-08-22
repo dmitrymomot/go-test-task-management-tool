@@ -38,6 +38,12 @@
   revision = "4edaf76fe18865e36de734d887f4c01bd05707af"
 
 [[projects]]
+  name = "github.com/thedevsaddam/govalidator"
+  packages = ["."]
+  revision = "95c9c9c4864288c985e32eb32025819dae495c66"
+  version = "v1.9.1"
+
+[[projects]]
   name = "google.golang.org/appengine"
   packages = ["cloudsql"]
   revision = "b1f26356af11148e710935ed1ac8a7f5702c7612"
@@ -52,6 +58,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "76187ce8422f65bc7c8ae0c0d8d57ac599a92d1957b5c159b29e3fa721f500f3"
+  inputs-digest = "2c445632664297a2734bb4b9034499bc97f5f5791ac5fe5eafa73ce45472ce8a"
   solver-name = "gps-cdcl"
   solver-version = 1

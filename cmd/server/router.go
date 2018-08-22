@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"html/template"
 	"net/http"
 	"time"
 
@@ -13,7 +12,7 @@ const (
 	// ContentTypeHeader is a content-type header key
 	ContentTypeHeader = "Content-Type"
 	// ContentTypeJSON is json content type
-	ContentTypeJSON = "application/json"
+	ContentTypeJSON = "application/json;charset=UTF-8"
 )
 
 func newRouter(ws taskWebservice) *router {
@@ -37,21 +36,13 @@ type router struct {
 }
 
 func (r *router) setup() *router {
-
-	r.r.HandleFunc("/", r.mainPageHandler()).Methods(http.MethodGet)
+	// health check
 	r.r.HandleFunc("/health", r.healthCheckHandler).Methods(http.MethodGet)
 
-	r.r.HandleFunc("/api/tasks", r.ws.GetAll()).
-		Methods(http.MethodGet).
-		Headers(ContentTypeHeader, ContentTypeJSON)
-
-	r.r.HandleFunc("/api/tasks/new", r.ws.GetNew()).
-		Methods(http.MethodGet).
-		Headers(ContentTypeHeader, ContentTypeJSON)
-
-	r.r.HandleFunc("/api/tasks/completed", r.ws.GetCompleted()).
-		Methods(http.MethodGet).
-		Headers(ContentTypeHeader, ContentTypeJSON)
+	// tasks api
+	r.r.HandleFunc("/api/tasks", r.ws.GetAll()).Methods(http.MethodGet)
+	r.r.HandleFunc("/api/tasks/new", r.ws.GetNew()).Methods(http.MethodGet)
+	r.r.HandleFunc("/api/tasks/completed", r.ws.GetCompleted()).Methods(http.MethodGet)
 
 	r.r.HandleFunc("/api/tasks", r.ws.Create()).
 		Methods(http.MethodPost).
@@ -69,6 +60,9 @@ func (r *router) setup() *router {
 		Methods(http.MethodDelete).
 		Headers(ContentTypeHeader, ContentTypeJSON)
 
+	// server sttic files
+	r.r.PathPrefix("/").Handler(http.FileServer(http.Dir("/public/")))
+
 	return r
 }
 
@@ -77,24 +71,17 @@ func (r *router) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	r.r.ServeHTTP(w, req)
 }
 
-func (r *router) mainPageHandler() http.HandlerFunc {
-	tpl := template.Must(template.ParseFiles("/tpl/main.html"))
-	return func(w http.ResponseWriter, r *http.Request) {
-		tpl.Execute(w, nil)
-	}
-}
+// func (r *router) mainPageHandler() http.HandlerFunc {
+// 	tpl := template.Must(template.ParseFiles("/tpl/main.html"))
+// 	return func(w http.ResponseWriter, r *http.Request) {
+// 		tpl.Execute(w, nil)
+// 	}
+// }
 
 func (r *router) healthCheckHandler(w http.ResponseWriter, req *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]interface{}{
 		"status":      http.StatusText(http.StatusOK),
 		"server_time": time.Now(),
-	})
-}
-
-func (r *router) notFound(w http.ResponseWriter, req *http.Request) {
-	w.WriteHeader(http.StatusNotFound)
-	json.NewEncoder(w).Encode(map[string]interface{}{
-		"error": http.StatusText(http.StatusNotFound),
 	})
 }

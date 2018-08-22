@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"time"
 
@@ -20,13 +19,14 @@ type server struct {
 
 type logger interface {
 	Error(err error)
+	Info(msg string)
 }
 
 type routerInterface interface {
 	ServeHTTP(http.ResponseWriter, *http.Request)
 }
 
-func (s *server) run(addr string) error {
+func (s *server) run(addr string) {
 	cors := handlers.CORS(
 		handlers.AllowedHeaders([]string{
 			"Accept",
@@ -47,6 +47,6 @@ func (s *server) run(addr string) error {
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}
-	log.Println(fmt.Sprintf("Server started %s", addr))
-	return srv.ListenAndServe()
+	s.l.Info(fmt.Sprintf("Server started %s", addr))
+	s.l.Error(srv.ListenAndServe())
 }

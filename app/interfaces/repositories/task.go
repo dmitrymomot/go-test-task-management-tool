@@ -119,9 +119,22 @@ func (r *TaskRepository) Update(task domain.Task) error {
 // Delete task from storage
 func (r *TaskRepository) Delete(id int64) error {
 	q := `DELETE FROM tasks WHERE id=?`
-	_, err := r.db.Execute(q, id)
+	result, err := r.db.Execute(q, id)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			return ErrNotFound
+		}
 		return err
+	}
+	rows, err := result.RowsAffected()
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return ErrNotFound
+		}
+		return err
+	}
+	if rows == 0 {
+		return ErrNotFound
 	}
 	return nil
 }

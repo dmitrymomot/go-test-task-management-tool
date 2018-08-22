@@ -11,7 +11,6 @@ WORKDIR $BASE_PATH
 
 COPY ./ .
 COPY ./config /config
-COPY ./tpl /tpl
 
 RUN curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 RUN dep ensure -v

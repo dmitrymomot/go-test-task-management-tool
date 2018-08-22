@@ -6,6 +6,7 @@ import (
 
 // Application config structure
 type config struct {
+	Debug         bool
 	DBSource      string
 	ListenAddress string
 }

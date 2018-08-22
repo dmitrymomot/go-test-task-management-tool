@@ -11,6 +11,8 @@ services:
         - "8080:8080"
     depends_on:
       - db
+    volumes:
+      - ./public:/public:ro
 
   db:
     container_name: "testapp_db"

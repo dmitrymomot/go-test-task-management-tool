@@ -12,7 +12,7 @@ func main() {
 	config := loadConfig()
 
 	// init logger
-	logger := infrastructure.NewLogger(false)
+	logger := infrastructure.NewLogger(config.Debug)
 
 	// init db connection
 	db := infrastructure.NewMySQLHandler(config.DBSource)
@@ -31,5 +31,5 @@ func main() {
 	// run server
 	router := newRouter(ws)
 	server := newServer(router.setup(), logger)
-	logger.Error(server.run(config.ListenAddress))
+	server.run(config.ListenAddress)
 }
